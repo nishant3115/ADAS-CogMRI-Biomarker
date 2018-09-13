@@ -1,0 +1,32 @@
+TITLE: DIF gender memory
+DATA: FILE is Data_MPlus_covariates_AD_MCI_Long.dat;
+VARIABLE: NAMES ARE y1-y31 u1-u35 Sex APOE CM EDU Age Status;
+          USEVARIABLES ARE y1-y31 u1-u35 Age Status; 
+          CLASSES = STAT(2);
+          KNOWNCLASS = STAT(Status=0 Status=1);
+          CATEGORICAL ARE u1-u35; 
+DEFINE:   STANDARDIZE y1-y31 Age;
+ANALYSIS: TYPE = MIXTURE;
+          ALGORITHM = INTEGRATION;
+          INTEGRATION = MONTECARLO(1000);
+MODEL:    %OVERALL%
+          f1 BY u1* u23-u30 u35;
+          f2 BY u2* u3-u8 u10-u13 u31-u34;
+          f3 BY u14* u15-u22;
+          y1-y31 ON Age;
+          f1@1;[f1@0]; f2@1; [f2@0]; f3@1; [f3@0];
+          y1-y31 WITH y1-y31;
+          %STAT#1%
+          f1 BY y4 y6 y8 y11 y13 y15 y26 y28 y30-y31;
+          f2 BY y1-y2 y5-y6 y8 y10 y12-y13 y16-y18 y23-y24 y26-y29;
+          f3 BY y2-y3 y7 y9 y14 y19-y22 y25 y27;
+          [y4 y6 y8 y11 y13 y15 y26 y28 y30-y31];
+          [y1-y2 y5-y6 y8 y10 y12-y13 y16-y18 y23-y24 y26-y29];
+          [y2-y3 y7 y9 y14 y19-y22 y25 y27];
+          %STAT#2%
+          f1 BY y4 y6 y8 y11 y13 y15 y26 y28 y30-y31;
+          f2 BY y1-y2 y5-y6 y8 y10 y12-y13 y16-y18 y23-y24 y26-y29;
+          f3 BY y2-y3 y7 y9 y14 y19-y22 y25 y27;
+          [y4 y6 y8 y11 y13 y15 y26 y28 y30-y31];
+          [y1-y2 y5-y6 y8 y10 y12-y13 y16-y18 y23-y24 y26-y29];
+          [y2-y3 y7 y9 y14 y19-y22 y25 y27];
